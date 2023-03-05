@@ -18,20 +18,24 @@ app.get('/api', (req, res) => {
     })
 })
 app.get('/api/:date', (req, res) => {
+    let {date} = req.params
+    if(!isNaN(date)){
+        date = Number(date)
+    }
     const regex2 = /^\d{4}([\-/.])(0?[1-9]|1[1-2])\1(3[01]|[12][0-9]|0?[1-9])$/
-    const test2 = regex2.test(req.params.date)
+    const test2 = regex2.test(date)
     if (test2) {
         return res.json({
-            unix: new Date( req.params.date).getTime() ,
-            utc:new Date(req.params.date).toUTCString()
+            unix: new Date(date).getTime() ,
+            utc:new Date(date).toUTCString()
         })
     } 
-    const regex = /^\d{1}/
-    const test = regex.test( req.params.date)
+    const regex = /^\d{1,16}/
+    const test = regex.test(date)
     if(test) {
         return res.json({
-            unix:new Date(Number(req.params.date)).getTime(),
-            utc:new Date(Number(req.params.date)).toUTCString()
+            unix:new Date(date).getTime(),
+            utc:new Date(date).toUTCString()
         })
     }
     return res.json({error: 'Invalid Date'})
